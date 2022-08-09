@@ -165,33 +165,33 @@ def st_ui():
             else:
                 datetime=f"{year}-10-01/{year}-12-30"
             print(datetime)
-            try:
-                item = sentinel_s2_l2a_cogs.get_sat_images(datetime, lat, lon).value
-                st.write("Done collecting")
-                
-                data_array = prepare_data(item, lat, lon, radius)
-                st.write("Done preparing")
-                water_map = inference(data_array)
-                st.write("Done infering")
-                visual_clip = render_images(item, lat, lon, radius, attribute_to_display = "visual")
-                st.write("Done rendering")
-                data_points.append(np.nansum(water_map))
-                time_points.append(item.datetime)
-                st.write(f"On {item.datetime}, relative area is : {np.nansum(water_map)}")
-                visual_clip = visual_clip.data.transpose().reshape(visual_clip.shape[1], visual_clip.shape[2], visual_clip.shape[0])
-                fig, [ax1, ax2] = plt.subplots(nrows=1, ncols=2)
-                ax1.imshow(np.rot90(visual_clip, k=3))
-                ax2.imshow(np.rot90(water_map, k=3))
-                buf = BytesIO()
-                fig.savefig(buf, format="png", bbox_inches='tight', transparent = True)
-                st.image(buf, use_column_width=False)
+            # try:
+            item = sentinel_s2_l2a_cogs.get_sat_images(datetime, lat, lon).value
+            st.write("Done collecting")
+            
+            data_array = prepare_data(item, lat, lon, radius)
+            st.write("Done preparing")
+            water_map = inference(data_array)
+            st.write("Done infering")
+            visual_clip = render_images(item, lat, lon, radius, attribute_to_display = "visual")
+            st.write("Done rendering")
+            data_points.append(np.nansum(water_map))
+            time_points.append(item.datetime)
+            st.write(f"On {item.datetime}, relative area is : {np.nansum(water_map)}")
+            visual_clip = visual_clip.data.transpose().reshape(visual_clip.shape[1], visual_clip.shape[2], visual_clip.shape[0])
+            fig, [ax1, ax2] = plt.subplots(nrows=1, ncols=2)
+            ax1.imshow(np.rot90(visual_clip, k=3))
+            ax2.imshow(np.rot90(water_map, k=3))
+            buf = BytesIO()
+            fig.savefig(buf, format="png", bbox_inches='tight', transparent = True)
+            st.image(buf, use_column_width=False)
 
-                plt.show()
+            #     plt.show()
 
-            except Exception as e:
-                print(e)
-                print(f"Nothing found for year {year} and month {month}")
-                continue
+            # except Exception as e:
+            #     print(e)
+            #     print(f"Nothing found for year {year} and month {month}")
+            #     continue
 
     # chart_data = pd.DataFrame(
     # data_points,
