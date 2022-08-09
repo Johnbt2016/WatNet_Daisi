@@ -1,0 +1,9 @@
+numpy
+tensorflow
+matplotlib
+rioxarray
+pyproj
+rasterio
+streamlit
+pandas
+pydaisi
