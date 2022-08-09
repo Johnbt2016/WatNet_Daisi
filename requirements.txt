@@ -1,5 +1,5 @@
 numpy
-tensorflow==2.8.2
+tensorflow==2.8.3
 matplotlib
 rioxarray
 pyproj
