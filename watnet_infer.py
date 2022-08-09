@@ -120,6 +120,7 @@ def prepare_data(item, lat, lon, radius=10000, attribute_to_display = "visual"):
 
     data_array = []
     for a in ['B02', 'B03', 'B04', 'B08', 'B11', 'B12']:
+            st.write(f"Collecting {a}")
             visual_href = assets[a].href
             visual = rioxarray.open_rasterio(visual_href)
             visual_clip = visual.rio.clip_box(
@@ -166,14 +167,14 @@ def st_ui():
             print(datetime)
             try:
                 item = sentinel_s2_l2a_cogs.get_sat_images(datetime, lat, lon).value
-                print("Done collecting")
+                st.write("Done collecting")
                 
                 data_array = prepare_data(item, lat, lon, radius)
-                print("Done preparing")
+                st.write("Done preparing")
                 water_map = inference(data_array)
-                print("Done infering")
+                st.write("Done infering")
                 visual_clip = render_images(item, lat, lon, radius, attribute_to_display = "visual")
-                print("Done rendering")
+                st.write("Done rendering")
                 data_points.append(np.nansum(water_map))
                 time_points.append(item.datetime)
                 st.write(f"On {item.datetime}, relative area is : {np.nansum(water_map)}")
