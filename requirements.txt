@@ -7,3 +7,4 @@ rasterio
 streamlit
 pandas
 pydaisi
+pystac
