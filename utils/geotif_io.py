@@ -1,11 +1,12 @@
 ## author: luo xin, creat: 2021.6.18, modify: 2021.7.14
 
 import numpy as np
-from osgeo import gdal
-from osgeo import osr
+# from osgeo import gdal
+# from osgeo import osr
+import rasterio
 
 ### tiff image reading
-def readTiff(path_in):
+def readTiff_gdal(path_in):
     '''
     return: 
         img: numpy array, exent: tuple, (x_min, x_max, y_min, y_max) 
@@ -34,6 +35,39 @@ def readTiff(path_in):
         return img_array, img_info 
     else:
         return img_array, img_info
+
+### tiff image reading with rasterio
+def readTiff(path_in):
+    '''
+    return: 
+        img: numpy array, exent: tuple, (x_min, x_max, y_min, y_max) 
+        proj info, and dimentions: (row, col, band)
+    '''
+    RS_Data = rasterio.open(path_in)
+    # RS_Data=gdal.Open(path_in)
+    im_col = RS_Data.width  # 
+    im_row = RS_Data.height  # 
+    im_bands = len(RS_Data.indexes)  # 
+    im_geotrans = RS_Data.transform  # 
+    im_proj = RS_Data.crs  # 
+    img_array = RS_Data.read().astype(np.float)  # 
+    left = im_geotrans[0]
+    up = im_geotrans[3]
+    right = left + im_geotrans[1] * im_col + im_geotrans[2] * im_row
+    bottom = up + im_geotrans[5] * im_row + im_geotrans[4] * im_col
+    extent = (left, right, bottom, up)
+    # espg_code = osr.SpatialReference(wkt=im_proj).GetAttrValue('AUTHORITY',1)
+
+    img_info = {'geoextent': extent, 'geotrans':im_geotrans, \
+                'geosrs': im_proj, 'row': im_row, 'col': im_col,\
+                    'bands': im_bands}
+
+    if im_bands > 1:
+        img_array = np.transpose(img_array, (1, 2, 0)) # 
+        return img_array, img_info 
+    else:
+        return img_array, img_info
+
 
 ###  .tiff image write
 def writeTiff(im_data, im_geotrans, im_geosrs, path_out):
