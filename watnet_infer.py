@@ -166,7 +166,7 @@ def st_ui():
                 datetime=f"{year}-10-01/{year}-12-30"
             print(datetime)
             try:
-                with st.spinner(f"Collecting data and running inference for period {datetime}")
+                with st.spinner(f"Collecting data and running inference for period {datetime}"):
                     item = sentinel_s2_l2a_cogs.get_sat_images(datetime, lat, lon).value
                     st.write("Done collecting")
                     
